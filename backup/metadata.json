@@ -1,0 +1,12 @@
+{
+    "KPlugin": {
+        "Id": "focusborder",
+        "Name": "Focus Border",
+        "Description": "Draws a border around the active window",
+        "Version": "1.0",
+        "License": "GPL",
+        "EnabledByDefault": false
+    },
+    "X-KDE-ServiceTypes": ["KWin/Effect"],
+    "org.kde.kwin.effect": { "internal": false }
+}
