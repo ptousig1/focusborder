@@ -178,8 +178,43 @@ Or look at tracing live with:
 
 	journalctl --user -f
 
+I am considering using TTY1 for writing code and then testing the binaries using TTY2.
+Except I am having issues switching TTYs with Ctrl-Alt-Fn. I tried using a USB keyboard but it
+did not make a difference. I learned that I can switch TTYs with:
 
+	sudo chvt 1
 
+It looks like I can switch to TTY4 with Ctrl-Alt-F4 reliably, but then have to use chvt to switch
+back to TTY1. I plan to edit and compile on TTY1 logged in with plasma.desktop. And use TTY4 to
+test the binary by running the custom kwin_wayland binary directly.
+
+I created launchwayland.sh to simplify launching my custom kwin_wayland from TTY4.
+
+## Step 6: Editing the code
+
+I will try to use VSCode as an editor. But the build will be done in bash with a shell script I
+wrote, go.sh:
+
+	#!/usr/bin/env bash
+	set -e
+	cmake --build build -j8
+	cp build/bin/kwin_wayland ../kwin-dev/bin
+	echo Build succeeded!
+
+I have created the directory kwin/src/plugins/focusborder and have populated it with the same
+files as diminactive and edited them to rename the class to FocusBorderEffect. I was able to
+build without errors, but a quick test does not show a new effect in System Settings.
+I will need to figure out how System Settings finds the effects to display.
+
+It might be time to learn how to use a debugger in Linux.
+
+But before I can attach a debugger, I need to get kwin_wayland running inside of a window.
+Attaching gdb to the full screen version would freeze the debugger itself and deadlock.
+
+	export QT_LOGGING_RULES="kwin*.debug=true;kwin*.warning=true"
+	export KWIN_COMPOSE=O2
+	export KWIN_FORCE_OWN_LOGGING=1
+	~/Projects/kwin-dev/bin/kwin_wayland --xwayland --width 1600 --height 900 --exit-with-session=/usr/bin/konsole
 
 
 
